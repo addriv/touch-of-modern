@@ -8,6 +8,8 @@ class Cuboid
     @width = width
     @height = height
     @length = length
+    raise 'Must have x, y, and z origin' unless x && y && z
+    raise 'Must have width, height, and length' unless width && height && length
   end
 
   def move_to!(x, y, z)
@@ -16,6 +18,7 @@ class Cuboid
     @origin_z = z
   end
   
+  # Returns an array of vertices [x,y,z] 
   def vertices
     face1 = [
       [@origin_x, @origin_y, @origin_z],
