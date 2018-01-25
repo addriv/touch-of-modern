@@ -6,27 +6,27 @@ require 'cuboid'
 describe Cuboid do
   describe "#initialize" do
     context "when using bad initialization arguments" do
-      it "detects invalid x origin" do
+      it "requires an x origin" do
         expect { Cuboid.new(nil, 0, 0, 1, 1, 1) }.to raise_error
       end
 
-      it "detects invalid y origin" do
+      it "requires a y origin" do
         expect { Cuboid.new(0, nil, 0, 1, 1, 1) }.to raise_error
       end
 
-      it "detects invalid z origin" do
+      it "requires a z origin" do
         expect { Cuboid.new(0, 0, nil, 1, 1, 1) }.to raise_error
       end
 
-      it "detects invalid width" do
+      it "requires a width" do
       expect { Cuboid.new(0, 0, 0, nil, 1, 1) }.to raise_error
       end
       
-      it "detects invalid height" do
+      it "requires a height" do
         expect { Cuboid.new(0, 0, 0, 1, nil, 1) }.to raise_error
       end
 
-      it "detects invalid z origin" do
+      it "requires a length" do
         expect { Cuboid.new(0, 0, 0, 1, 1, nil) }.to raise_error
       end
     end
@@ -50,13 +50,44 @@ describe Cuboid do
 
   end
 
-  describe "move_to" do
-    subject { Cuboid.new(0, 0, 0,)}
+  describe "#move_to!" do
+    subject { Cuboid.new(0, 0, 0, 1, 1, 1) }
     it "changes the origin in the simple happy case" do
       expect(subject.move_to!(1, 2, 3)).to be true
     end
+
+    context "when using bad coordinates" do
+      it "requires an x coordinate" do
+        expect { subject.move_to!(nil, 1, 1) }.to raise_error
+      end
+
+      it "requires a y coordinate" do
+        expect { subject.move_to!(1, nil, 1) }.to raise_error        
+      end
+
+      it "requires a z coordinate" do
+        expect { subject.move_to!(1, 1, nil) }.to raise_error
+      end
+    end
+
+    context "when using valid coordinates" do
+      it "moves the cuboid to given coordinates" do
+        10.times do
+          valid_coordinates = Array.new(3) { rand(1000) }
+          subject.move_to!(*valid_coordinates)
+
+          expect(subject.origin_x).to eq(valid_coordinates[0])
+          expect(subject.origin_y).to eq(valid_coordinates[1])
+          expect(subject.origin_z).to eq(valid_coordinates[2])
+        end
+      end
+    end
   end    
   
+  describe "#vertices" do
+    
+  end
+
   describe "intersects?" do
   end
 
