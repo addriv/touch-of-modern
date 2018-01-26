@@ -4,8 +4,10 @@ require 'cuboid'
 #  Do whatever you need to do to make it work and please add your own test cases for as many
 #  methods as you feel need coverage
 describe Cuboid do
+  subject { Cuboid.new(0, 0, 0, 1, 1, 1) }
+
   describe "#initialize" do
-    context "when using bad initialization arguments" do
+    context "when invalid arguments" do
       it "requires an x origin" do
         expect { Cuboid.new(nil, 0, 0, 1, 1, 1) }.to raise_error
       end
@@ -31,7 +33,7 @@ describe Cuboid do
       end
     end
 
-    context "when using valid input" do
+    context "when using valid arguments" do
       it "creates a cuboid with good input" do
         10.times do 
           valid_input = Array.new(6) { rand(1000) }
@@ -51,7 +53,6 @@ describe Cuboid do
   end
 
   describe "#move_to!" do
-    subject { Cuboid.new(0, 0, 0, 1, 1, 1) }
     it "changes the origin in the simple happy case" do
       expect(subject.move_to!(1, 2, 3)).to be true
     end
@@ -85,10 +86,37 @@ describe Cuboid do
   end    
   
   describe "#vertices" do
-    
+    it "returns an array of vertices" do
+      expect(subject.vertices).to be_instance_of(Array)
+    end
+
+    it "returns each vertex as an array" do
+      subject.vertices.each do |vertex|
+        expect(vertex).to be_instance_of(Array)
+      end
+    end
+
+    it "returns a total of 8 vertices" do
+      expect(subject.vertices.length).to eq(8)
+    end
+
+    it "returns the correct coordinates for all vertices" do
+      x_count1 = subject.vertices.count { |vertex| vertex[0] == subject.origin_x }
+      x_count2 = subject.vertices.count { |vertex| vertex[0] == subject.origin_x + subject.width }
+      y_count1 = subject.vertices.count { |vertex| vertex[1] == subject.origin_y }
+      y_count2 = subject.vertices.count { |vertex| vertex[1] == subject.origin_y + subject.height }
+      z_count1 = subject.vertices.count { |vertex| vertex[2] == subject.origin_z }
+      z_count2 = subject.vertices.count { |vertex| vertex[2] == subject.origin_z + subject.length}
+
+      expect(x_count1).to eq(4)
+      expect(x_count2).to eq(4)
+      expect(y_count1).to eq(4)
+      expect(y_count2).to eq(4)
+      expect(z_count2).to eq(4)
+      expect(z_count2).to eq(4)
+    end
   end
 
   describe "intersects?" do
   end
-
 end

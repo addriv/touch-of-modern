@@ -22,26 +22,47 @@ class Cuboid
   
   # Returns an array of vertices [x,y,z] 
   def vertices
-    face1 = [
+    face1_vertices = [
       [@origin_x, @origin_y, @origin_z],
       [@origin_x, @origin_y + @height, @origin_z],
       [@origin_x + @width, @origin_y, @origin_z],
       [@origin_x + @width, @origin_y + @height, @origin_z]
     ]
-    face2 = face1.map do |vertex|
+
+    face2_vertices = face1.map do |vertex|
       vertex[0..1] << vertex[2] + @length
     end
 
-    face1 + face2
+    face1_vertices + face2_vertices
   end
   
-  #returns true if the two cuboids intersect each other.  False otherwise.
-  def intersects?(other)
-    return false if other.origin_x + other.width < @origin_x || other.origin_x > @origin_x + width
-    return false if other.origin_y + other.height < @origin_y || other.origin_y > @origin_y + @height
-    return false if other.origin_z + other.length < @origin_z || other.origin_z > @origin_z + @length
-    true
+  #Returns true if the two cuboids intersect each other.  False otherwise.
+  def intersects_in_axis?(other_cuboid, axis)
+    dimensions = {
+      x: "width",
+      y: "height",
+      z: "length"
+    }
+
+    min_axis = self.send("origin_#{axis}")
+    max_axis = min_axis + self.send(dimensions[axis])
+    other_min_axis = other_cuboid.send("origin_#{axis}")
+    other_max_axis = other_cuboid.send(dimensions[axis])
+
+
+    if (other_min_axis >= min_axis && other_min_axis <= max_axis) ||
+       (min_axis >= other_min_axis && min_axis <= other_max_axis)
+      true
+    else
+      false
+    end
   end
 
-  #END public methods that should be your starting point  
+  def intersects?(other)
+    [:x, :y, :z].each do |axis|
+      return true if intersects_in_axis?(other, axis)
+    end
+
+    false
+  end
 end
