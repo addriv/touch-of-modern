@@ -1,8 +1,5 @@
 require 'cuboid'
 
-#This test is incomplete and, in fact, won't even run without errors.  
-#  Do whatever you need to do to make it work and please add your own test cases for as many
-#  methods as you feel need coverage
 describe Cuboid do
   subject { Cuboid.new(0, 0, 0, 1, 1, 1) }
 
@@ -86,37 +83,54 @@ describe Cuboid do
   end    
   
   describe "#vertices" do
+    let(:vertices) { subject.vertices.uniq }
+
     it "returns an array of vertices" do
-      expect(subject.vertices).to be_instance_of(Array)
+      expect(vertices).to be_instance_of(Array)
     end
 
     it "returns each vertex as an array" do
-      subject.vertices.each do |vertex|
+      vertices.each do |vertex|
         expect(vertex).to be_instance_of(Array)
       end
     end
 
-    it "returns a total of 8 vertices" do
-      expect(subject.vertices.length).to eq(8)
+    it "returns 8 unique vertices" do
+      expect(vertices.length).to eq(8)
     end
 
     it "returns the correct coordinates for all vertices" do
-      x_count1 = subject.vertices.count { |vertex| vertex[0] == subject.origin_x }
-      x_count2 = subject.vertices.count { |vertex| vertex[0] == subject.origin_x + subject.width }
-      y_count1 = subject.vertices.count { |vertex| vertex[1] == subject.origin_y }
-      y_count2 = subject.vertices.count { |vertex| vertex[1] == subject.origin_y + subject.height }
-      z_count1 = subject.vertices.count { |vertex| vertex[2] == subject.origin_z }
-      z_count2 = subject.vertices.count { |vertex| vertex[2] == subject.origin_z + subject.length}
+      dimensions = {
+        x: "width",
+        y: "height",
+        z: "length"
+      }
 
-      expect(x_count1).to eq(4)
-      expect(x_count2).to eq(4)
-      expect(y_count1).to eq(4)
-      expect(y_count2).to eq(4)
-      expect(z_count2).to eq(4)
-      expect(z_count2).to eq(4)
+      [:x, :y, :z].each_with_index do |axis, i|
+        min_axis_coordinate = subject.send("origin_#{axis}")
+        max_axis_coordinate = subject.send("origin_#{axis}") + subject.send(dimensions[axis])
+
+        count1 = vertices.count { |vertex| vertex[i] == min_axis_coordinate}
+        count2 = vertices.count { |vertex| vertex[i] == max_axis_coordinate}
+
+        expect(count1).to eq(4)
+        expect(count2).to eq(4)
+      end
     end
   end
 
   describe "intersects?" do
+    context "when two cuboids intersect" do
+      it "returns true" do
+        expect(subject.intersects?(subject)).to be true
+      end
+    end
+
+    context "when two cuboids do not intersect" do
+      it "returns false" do
+        other_cuboid = Cuboid.new(2, 2, 2, 1, 1, 1)
+        expect(subject.intersects?(other_cuboid)).to be false
+      end
+    end
   end
 end

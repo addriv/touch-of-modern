@@ -3,7 +3,7 @@ class Cuboid
 
   def initialize(x, y, z, width, height, length)  
     raise 'Must have x, y, and z origin' unless x && y && z
-    raise 'Must have width, height, and length' unless width && height && length
+    raise 'Must have width, height, and length' unless width > 0 && height > 0 && length > 0
     @origin_x = x
     @origin_y = y
     @origin_z = z
@@ -29,7 +29,7 @@ class Cuboid
       [@origin_x + @width, @origin_y + @height, @origin_z]
     ]
 
-    face2_vertices = face1.map do |vertex|
+    face2_vertices = face1_vertices.map do |vertex|
       vertex[0..1] << vertex[2] + @length
     end
 
