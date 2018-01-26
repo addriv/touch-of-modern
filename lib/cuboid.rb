@@ -3,7 +3,10 @@ class Cuboid
 
   def initialize(x, y, z, width, height, length)  
     raise 'Must have x, y, and z origin' unless x && y && z
-    raise 'Must have width, height, and length' unless width > 0 && height > 0 && length > 0
+    unless width > 0 && height > 0 && length > 0
+      raise "Width, height, and length must be greater than 0"
+    end
+
     @origin_x = x
     @origin_y = y
     @origin_z = z
@@ -14,6 +17,7 @@ class Cuboid
 
   def move_to!(x, y, z)
     raise 'Must have x, y, and z origin' unless x && y && z
+    
     @origin_x = x
     @origin_y = y
     @origin_z = z
